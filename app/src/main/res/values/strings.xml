@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KedvesNaplom</string>
+    <string name="database">KedvesNaplom.db</string>
 </resources>
