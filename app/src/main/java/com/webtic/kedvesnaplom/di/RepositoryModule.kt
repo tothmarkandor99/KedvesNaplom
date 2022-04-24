@@ -2,6 +2,7 @@ package com.webtic.kedvesnaplom.di
 
 import com.webtic.kedvesnaplom.network.BejegyzesService
 import com.webtic.kedvesnaplom.persistence.BejegyzesDao
+import com.webtic.kedvesnaplom.ui.main.MainRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +16,9 @@ object RepositoryModule {
     @Provides
     @ViewModelScoped
     fun provideMainRepository(
-        disneyService: BejegyzesService,
+        bejegyzesService: BejegyzesService,
         posterDao: BejegyzesDao
     ): MainRepository {
-        return MainRepository(disneyService, posterDao)
+        return MainRepository(bejegyzesService, posterDao)
     }
 }
