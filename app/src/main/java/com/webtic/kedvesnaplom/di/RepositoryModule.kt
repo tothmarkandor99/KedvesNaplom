@@ -17,8 +17,8 @@ object RepositoryModule {
     @ViewModelScoped
     fun provideMainRepository(
         bejegyzesService: BejegyzesService,
-        posterDao: BejegyzesDao
+        bejegyzesDao: BejegyzesDao
     ): MainRepository {
-        return MainRepository(bejegyzesService, posterDao)
+        return MainRepository(bejegyzesService, bejegyzesDao)
     }
 }

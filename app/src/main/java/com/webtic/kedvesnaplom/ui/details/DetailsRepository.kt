@@ -17,5 +17,10 @@ class DetailsRepository @Inject constructor(
         emit(bejegyzes)
     }.flowOn(Dispatchers.IO)
 
+    @WorkerThread
+    fun putBejegyzes(tartalom: String) = flow {
+        emit(null)
+    }.flowOn(Dispatchers.IO)
+
     // TODO: megvalósítani a hozzáadást/mentést
 }
