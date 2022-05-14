@@ -1,7 +1,7 @@
 package com.webtic.kedvesnaplom.network
 
 import com.webtic.kedvesnaplom.network.dto.DeleteBejegyzesDto
-import com.webtic.kedvesnaplom.network.dto.GetBejegyzesekDto
+import com.webtic.kedvesnaplom.network.dto.GetBejegyzesekListaElemDto
 import com.webtic.kedvesnaplom.network.dto.PutBejegyzesDto
 import retrofit2.Call
 import retrofit2.http.DELETE
@@ -11,7 +11,7 @@ import retrofit2.http.PUT
 interface BejegyzesService {
 
     @GET("bejegyzesek")
-    suspend fun fetchBejegyzesList(): Call<List<GetBejegyzesekDto>>
+    suspend fun fetchBejegyzesList(): Call<List<GetBejegyzesekListaElemDto>>
 
     @PUT("bejegyzes")
     suspend fun putBejegyzes(bejegyzes: PutBejegyzesDto)
