@@ -1,13 +1,13 @@
 package com.webtic.kedvesnaplom.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -62,7 +62,7 @@ fun MainPage(
             Modifier.background(Color.White)
         )
     }) {
-
+    Bejegyzesek(bejegyzesek)
     }
 }
 
@@ -77,11 +77,14 @@ fun Bejegyzesek(
             SimpleDateFormat("yyyy-MM-dd")
         val nowAsIso: String = df.format(Date())
         items(items = bejegyzesek, itemContent = { bejegyzes ->
-            if (bejegyzes.datum === nowAsIso) {
+            Log.d("KN", "bejegyzes.datum: " + bejegyzes.datum)
+            if (bejegyzes.datum.equals(nowAsIso)) {
+                Log.d("KN", "nowAsIso: "  + nowAsIso)
                 MutableBejegyzes(bejegyzes)
             } else {
                 ImmutableBejegyzes(bejegyzes)
             }
+            Divider(Modifier.padding(vertical = 16.dp))
         })
     }
 }

@@ -2,11 +2,8 @@ package com.webtic.kedvesnaplom.ui.details
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.webtic.kedvesnaplom.model.Bejegyzes
-import com.webtic.kedvesnaplom.ui.main.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,5 +19,4 @@ class DetailsViewModel @Inject constructor(
 
     fun loadBejegyzesById(id: Long) = bejegyzesIdSharedFlow.tryEmit(id)
 
-    // TODO: megvalósítani a mentést
 }

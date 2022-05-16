@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.webtic.kedvesnaplom.ui.main.MainPage
 import com.webtic.kedvesnaplom.ui.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,14 +18,13 @@ class DetailsActivity : ComponentActivity() {
             DetailsPage(viewModel = hiltViewModel())
         }
     }
-    // TODO: összerakni Jetpack Compose-zal a szerkesztés/hozzáadás nézetet
 }
 
 @Composable
 fun DetailsPage(
     viewModel: MainViewModel
 ){
-    Button(onClick = { viewModel. }) {
+    Button(onClick = { /* TODO */ }) {
 
     }
 }

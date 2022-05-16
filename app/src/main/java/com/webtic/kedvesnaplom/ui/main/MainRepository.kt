@@ -1,9 +1,6 @@
 package com.webtic.kedvesnaplom.ui.main
 
-import android.util.Log
 import androidx.annotation.WorkerThread
-import com.skydoves.sandwich.onFailure
-import com.skydoves.sandwich.suspendOnSuccess
 import com.webtic.kedvesnaplom.model.Bejegyzes
 import com.webtic.kedvesnaplom.network.BejegyzesService
 import com.webtic.kedvesnaplom.network.dto.DeleteBejegyzesDto
@@ -13,8 +10,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import retrofit2.await
-import retrofit2.awaitResponse
 import java.lang.Exception
 import javax.inject.Inject
 
