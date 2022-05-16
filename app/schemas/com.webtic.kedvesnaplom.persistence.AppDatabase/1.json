@@ -1,0 +1,52 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "539438be0d5d497a4405042d4cfaa447",
+    "entities": [
+      {
+        "tableName": "Bejegyzes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`azonosito` INTEGER NOT NULL, `felhasznaloAzonosito` TEXT NOT NULL, `datum` TEXT NOT NULL, `tartalom` TEXT NOT NULL, PRIMARY KEY(`azonosito`))",
+        "fields": [
+          {
+            "fieldPath": "azonosito",
+            "columnName": "azonosito",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "felhasznaloAzonosito",
+            "columnName": "felhasznaloAzonosito",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "datum",
+            "columnName": "datum",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tartalom",
+            "columnName": "tartalom",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "azonosito"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '539438be0d5d497a4405042d4cfaa447')"
+    ]
+  }
+}
