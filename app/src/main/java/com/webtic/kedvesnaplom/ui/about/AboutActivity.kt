@@ -37,7 +37,11 @@ fun AboutPage() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val image: Painter = painterResource(id = R.drawable.ic_launcher_background)
-        Image(painter = image,contentDescription = "")
+        Image(
+            painter = image,
+            contentDescription = "Alkalmazás logo",
+            modifier = Modifier.padding(16.dp)
+        )
         Text(
             text = "Second item",
             color = MaterialTheme.colors.onPrimary,

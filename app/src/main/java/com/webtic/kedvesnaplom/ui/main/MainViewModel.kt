@@ -15,15 +15,13 @@ class MainViewModel @Inject constructor(
     mainRepository: MainRepository
 ) : ViewModel() {
 
-    val posterList: Flow<List<Bejegyzes>> =
+    val bejegyzesList: Flow<List<Bejegyzes>> =
         mainRepository.loadBejegyzesek(
             onStart = { _isLoading.value = true },
             onCompletion = { _isLoading.value = false },
-            onError = { Log.d("KN", it) }
+            onError = { errorMsg -> Log.d("KN", errorMsg) }
         )
 
     private val _isLoading: MutableState<Boolean> = mutableStateOf(false)
     val isLoading: State<Boolean> get() = _isLoading
-
-    // TODO: megvalósítani a törlést
 }

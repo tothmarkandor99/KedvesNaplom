@@ -2,6 +2,8 @@ package com.webtic.kedvesnaplom.ui.details
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.webtic.kedvesnaplom.model.Bejegyzes
+import com.webtic.kedvesnaplom.ui.main.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -13,10 +15,6 @@ class DetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val bejegyzesIdSharedFlow: MutableSharedFlow<Long> = MutableSharedFlow(replay = 1)
-
-    val bejegyzesDetailsFlow = bejegyzesIdSharedFlow.flatMapLatest {
-        detailsRepository.getBejegyzesById(it.toInt())
-    }
 
     init {
         Log.d("KN","init DetailViewModel")
