@@ -29,7 +29,7 @@ object NetworkModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(
-                "http://194.99.22.192/"
+                "https://moblab.webtic.icu/"
             )
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -37,7 +37,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideDisneyService(retrofit: Retrofit): BejegyzesService {
+    fun provideBejegyzesService(retrofit: Retrofit): BejegyzesService {
         return retrofit.create(BejegyzesService::class.java)
     }
 }
