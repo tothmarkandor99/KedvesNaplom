@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -20,6 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.webtic.kedvesnaplom.R
 import com.webtic.kedvesnaplom.model.Bejegyzes
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +48,7 @@ fun BejegyzesekPreview() {
         Bejegyzes(0,"lorem","2022-05-08", "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"),
         Bejegyzes(0,"lorem","2022-05-08", "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"),
         Bejegyzes(0,"lorem","2022-05-08", "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur")
-    ))
+    ), remember { mutableStateOf(false) }, {}, {})
 }
 
 @Composable
@@ -53,39 +56,56 @@ fun MainPage(
     viewModel: MainViewModel,
     selectBejegyzes: (Long) -> Unit
 ) {
-    val bejegyzesek: List<Bejegyzes> by viewModel.bejegyzesList.collectAsState(initial = listOf())
-    val isLoading: Boolean by viewModel.isLoading
-
+    val bejegyzesek: List<Bejegyzes> by viewModel.bejegyzesek.collectAsState()
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(text = bejegyzesek.size.toString() + " bejegyzés") },
             Modifier.background(Color.White)
         )
     }) {
-    Bejegyzesek(bejegyzesek)
+        if (bejegyzesek.isEmpty()) {
+            Button(onClick = { viewModel.refreshBejegyzesek() }) {
+                Text(text = "Frissítés")
+            }
+        } else {
+            Bejegyzesek(
+                bejegyzesek,
+                viewModel.isLoading,
+                { viewModel.refreshBejegyzesek() },
+                onDelete = { viewModel.deleteBejegyzes() }
+            )
+        }
     }
 }
 
 @Composable
 fun Bejegyzesek(
     bejegyzesek: List<Bejegyzes>,
+    isLoading: State<Boolean>,
+    onRefresh: () -> Unit,
+    onDelete: ()-> Unit,
 ) {
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isLoading.value),
+        onRefresh = onRefresh,
     ) {
-        val df: DateFormat =
-            SimpleDateFormat("yyyy-MM-dd")
-        val nowAsIso: String = df.format(Date())
-        items(items = bejegyzesek, itemContent = { bejegyzes ->
-            Log.d("KN", "bejegyzes.datum: " + bejegyzes.datum)
-            if (bejegyzes.datum.equals(nowAsIso)) {
-                Log.d("KN", "nowAsIso: "  + nowAsIso)
-                MutableBejegyzes(bejegyzes)
-            } else {
-                ImmutableBejegyzes(bejegyzes)
-            }
-            Divider(Modifier.padding(vertical = 16.dp))
-        })
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        ) {
+            val df: DateFormat =
+                SimpleDateFormat("yyyy-MM-dd")
+            val nowAsIso: String = df.format(Date())
+            items(items = bejegyzesek, itemContent = { bejegyzes ->
+                Log.d("KN", "bejegyzes.datum: " + bejegyzes.datum)
+                if (bejegyzes.datum.equals(nowAsIso)) {
+                    Log.d("KN", "nowAsIso: "  + nowAsIso)
+                    MutableBejegyzes(bejegyzes, onDelete)
+                } else {
+                    ImmutableBejegyzes(bejegyzes)
+                }
+                Divider(Modifier.padding(vertical = 16.dp))
+            })
+        }
     }
 }
 
@@ -115,19 +135,24 @@ fun ImmutableBejegyzes(
 @Preview
 @Composable
 fun MutableBejegyzesPreview() {
-    MutableBejegyzes(Bejegyzes(0,"lorem","2022-05-08", "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"))
+    MutableBejegyzes(Bejegyzes(
+        0,
+        "lorem","2022-05-08", "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"),
+        {},
+    )
 }
 
 @Composable
 fun MutableBejegyzes(
-    bejegyzes: Bejegyzes
+    bejegyzes: Bejegyzes,
+    onDelete: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement  =  Arrangement.SpaceBetween
     ) {
-        Column() {
+        Column(Modifier.weight(1f)) {
             Text(
                 text = bejegyzes.datum,
                 Modifier.padding(bottom = 8.dp)
@@ -140,11 +165,11 @@ fun MutableBejegyzes(
         }
         val image: Painter = painterResource(id = R.drawable.ic_launcher_background)
         Row() {
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Törlés")
+            Button(onClick = { onDelete() }) {
+                Icon(Icons.Rounded.Delete, contentDescription = "Törlés")
             }
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Szerkesztés")
+            Button(onClick = { /*TODO*/ }, Modifier.padding(start = 4.dp)) {
+                Icon(Icons.Rounded.Edit, contentDescription = "Szerkesztés")
             }
         }
     }

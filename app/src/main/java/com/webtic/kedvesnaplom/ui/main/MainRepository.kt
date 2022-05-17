@@ -1,15 +1,10 @@
 package com.webtic.kedvesnaplom.ui.main
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.webtic.kedvesnaplom.model.Bejegyzes
 import com.webtic.kedvesnaplom.network.BejegyzesService
-import com.webtic.kedvesnaplom.network.dto.DeleteBejegyzesDto
 import com.webtic.kedvesnaplom.persistence.BejegyzesDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -17,48 +12,37 @@ class MainRepository @Inject constructor(
     private val bejegyzesService: BejegyzesService,
     private val bejegyzesDao: BejegyzesDao
 ) {
-
     @WorkerThread
-    fun loadBejegyzesek(
-        onStart: () -> Unit,
-        onCompletion: () -> Unit,
-        onError: (String) -> Unit
-    ) = flow {
-        val bejegyzesek: List<Bejegyzes> = bejegyzesDao.getBejegyzesList()
-        if (bejegyzesek.isEmpty()) {
+    suspend fun loadBejegyzesek(
+        forceDownload: Boolean = false,
+    ): List<Bejegyzes> {
+        val bejegyzesek = bejegyzesDao.getBejegyzesList()
+        if (forceDownload || bejegyzesek.isEmpty()) {
             try {
                 val response = bejegyzesService.fetchBejegyzesList("hal")
                 val frissBejegyzesek = response.map { b -> Bejegyzes(
                     b.azonosito, b.felhasznaloAzonosito, b.datum, b.tartalom
                 ) }
+                bejegyzesDao.clearBejegyzesList()
                 bejegyzesDao.insertBejegyzesList(frissBejegyzesek)
-                emit(frissBejegyzesek)
-            } catch (e: Exception) {
-                onError("Hálózati hiba történt")
-            }
-        } else {
-            emit(bejegyzesek)
+                return frissBejegyzesek
+            } catch (e: Exception) {}
         }
-    }.onStart { onStart() }.onCompletion { onCompletion() }.flowOn(Dispatchers.IO)
+        return bejegyzesek
+    }
 
     @WorkerThread
-    fun deleteBejegyzes(
-        onStart: () -> Unit,
-        onCompletion: () -> Unit,
-        onError: (String) -> Unit
-    ) = flow {
+    suspend fun deleteBejegyzes() {
         try {
-            bejegyzesService.deleteBejegyzes(DeleteBejegyzesDto("hal"))
+            bejegyzesService.deleteBejegyzes("hal")
             val response = bejegyzesService.fetchBejegyzesList("hal")
             val frissBejegyzesek = response.map { b -> Bejegyzes(
                 b.azonosito, b.felhasznaloAzonosito, b.datum, b.tartalom
             ) }
+            bejegyzesDao.clearBejegyzesList()
             bejegyzesDao.insertBejegyzesList(frissBejegyzesek)
-            emit(frissBejegyzesek)
         } catch (e: Exception) {
-            onError("Hálózati hiba történt")
+            Log.d("KN", e.message.toString())
         }
-    }.onStart { onStart() }.onCompletion { onCompletion() }.flowOn(Dispatchers.IO)
-
-    // TODO: megvalósítani a törlést
+    }
 }
