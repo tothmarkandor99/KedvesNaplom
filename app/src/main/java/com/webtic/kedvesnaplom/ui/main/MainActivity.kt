@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -21,10 +24,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.webtic.kedvesnaplom.R
 import com.webtic.kedvesnaplom.model.Bejegyzes
+import com.webtic.kedvesnaplom.ui.about.AboutPage
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -36,7 +44,23 @@ class MainActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainPage(viewModel = hiltViewModel(), {})
+            AppNavigation()
+        }
+    }
+}
+
+@Composable
+fun AppNavigation() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = NavScreen.Home.route
+    ) {
+        composable(NavScreen.Home.route) {
+            MainPage(viewModel = hiltViewModel(), {navController.navigate(NavScreen.About.route)})
+        }
+        composable(NavScreen.About.route) {
+            AboutPage()
         }
     }
 }
@@ -54,18 +78,35 @@ fun BejegyzesekPreview() {
 @Composable
 fun MainPage(
     viewModel: MainViewModel,
-    selectBejegyzes: (Long) -> Unit
+    onClickFab: () -> Unit,
 ) {
     val bejegyzesek: List<Bejegyzes> by viewModel.bejegyzesek.collectAsState()
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text(text = bejegyzesek.size.toString() + " bejegyzés") },
-            Modifier.background(Color.White)
+            Modifier.background(Color.White),
+            actions = {
+                Button(onClick = {  }, Modifier.border(BorderStroke(0.dp, Color.Transparent)) ) {
+                    Icon(Icons.Rounded.Add, "Új bejegyzés")
+                }
+            }
         )
+    },
+    floatingActionButton = {
+        FloatingActionButton(onClick = { onClickFab() }) {
+            Icon(Icons.Rounded.Info, "Névjegy")
+        }
     }) {
         if (bejegyzesek.isEmpty()) {
-            Button(onClick = { viewModel.refreshBejegyzesek() }) {
-                Text(text = "Frissítés")
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = { viewModel.refreshBejegyzesek() }) {
+                    Icon(Icons.Rounded.Refresh, "Frissítés")
+                }
             }
         } else {
             Bejegyzesek(
@@ -96,9 +137,7 @@ fun Bejegyzesek(
                 SimpleDateFormat("yyyy-MM-dd")
             val nowAsIso: String = df.format(Date())
             items(items = bejegyzesek, itemContent = { bejegyzes ->
-                Log.d("KN", "bejegyzes.datum: " + bejegyzes.datum)
                 if (bejegyzes.datum.equals(nowAsIso)) {
-                    Log.d("KN", "nowAsIso: "  + nowAsIso)
                     MutableBejegyzes(bejegyzes, onDelete)
                 } else {
                     ImmutableBejegyzes(bejegyzes)
@@ -172,5 +211,14 @@ fun MutableBejegyzes(
                 Icon(Icons.Rounded.Edit, contentDescription = "Szerkesztés")
             }
         }
+    }
+}
+
+sealed class NavScreen(val route: String) {
+    object Home : NavScreen("Home")
+    object About : NavScreen("About")
+    object BejegyzesDetails : NavScreen("BejegyzesDetails") {
+        const val routeWithArgument: String = "BejegyzesDetails/{azonosito}"
+        const val argument0: String = "azonosito"
     }
 }

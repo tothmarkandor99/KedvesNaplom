@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -32,7 +34,7 @@ class AboutActivity: ComponentActivity() {
 @Composable
 fun AboutPage() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -44,12 +46,12 @@ fun AboutPage() {
         )
         Text(
             text = "Second item",
-            color = MaterialTheme.colors.onPrimary,
+            color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
         Text(
             text = "Third item",
-            color = MaterialTheme.colors.onPrimary,
+            color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
     }
