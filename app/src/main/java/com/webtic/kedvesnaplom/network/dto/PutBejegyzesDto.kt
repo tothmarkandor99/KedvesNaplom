@@ -1,6 +1,6 @@
 package com.webtic.kedvesnaplom.network.dto
 
 data class PutBejegyzesDto (
-    val felhasznaloAzonositoval: String,
+    val felhasznaloAzonosito: String,
     val tartalom: String,
 )
