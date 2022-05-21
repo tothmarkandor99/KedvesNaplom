@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -74,7 +75,7 @@ fun AppNavigation() {
         composable(
             route = NavScreen.BejegyzesDetails.routeWithArgument,
             arguments = listOf(navArgument(NavScreen.BejegyzesDetails.argument0) {
-                defaultValue = ""
+                defaultValue = "-1"
             })
         ) { backStackEntry ->
             val azonosito =
@@ -119,20 +120,20 @@ fun MainPage(
 
     val bejegyzesek: List<Bejegyzes> by viewModel.bejegyzesek.collectAsState()
 
-    val df: DateFormat =
-        SimpleDateFormat("yyyy-MM-dd")
-    val nowAsIso: String = df.format(Date())
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = bejegyzesek.size.toString() + " bejegyzés") },
                 Modifier.background(Color.White),
                 actions = {
-                    Button(onClick = {
-                        navController.navigate(NavScreen.BejegyzesDetails.route)
-                    }, Modifier.border(BorderStroke(0.dp, Color.Transparent))) {
-                        Icon(Icons.Rounded.Add, "Új bejegyzés")
+                    if (viewModel.canAdd.value) {
+                        Button(
+                            onClick = { navController.navigate(NavScreen.BejegyzesDetails.route) },
+                            Modifier.border(BorderStroke(0.dp, Color.Transparent)),
+                            elevation = null,
+                        ) {
+                            Icon(Icons.Rounded.Add, "Új bejegyzés")
+                        }
                     }
                 }
             )

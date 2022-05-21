@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,10 +27,16 @@ class MainViewModel @Inject constructor(
     private val _isLoading: MutableState<Boolean> = mutableStateOf(false)
     val isLoading: State<Boolean> get() = _isLoading
 
+    private val _canAdd: MutableState<Boolean> = mutableStateOf(false)
+    val canAdd: State<Boolean> get() = _canAdd
+
     suspend fun loadBejegyzesek(
         forceDownload: Boolean = false,
     ) {
         _bejegyzesek.value = mainRepository.loadBejegyzesek(forceDownload)
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val nowAsIso: String = df.format(Date())
+        _canAdd.value = !nowAsIso.equals(_bejegyzesek.value[0].datum)
     }
 
     fun refreshBejegyzesek(forceDownload: Boolean = false) {

@@ -44,12 +44,12 @@ fun AboutPage() {
             modifier = Modifier.padding(16.dp)
         )
         Text(
-            text = "Second item",
+            text = "Kedves naplóm",
             color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
         Text(
-            text = "Third item",
+            text = "Tóth Márk Andor, F2S30Y",
             color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
