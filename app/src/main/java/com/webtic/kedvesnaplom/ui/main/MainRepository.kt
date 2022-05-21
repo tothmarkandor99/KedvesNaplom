@@ -1,34 +1,48 @@
 package com.webtic.kedvesnaplom.ui.main
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.webtic.kedvesnaplom.model.Bejegyzes
 import com.webtic.kedvesnaplom.network.BejegyzesService
 import com.webtic.kedvesnaplom.persistence.BejegyzesDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
+import java.lang.Exception
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(
     private val bejegyzesService: BejegyzesService,
     private val bejegyzesDao: BejegyzesDao
 ) {
+    @WorkerThread
+    suspend fun loadBejegyzesek(
+        forceDownload: Boolean = false,
+    ): List<Bejegyzes> {
+        val bejegyzesek = bejegyzesDao.getBejegyzesList()
+        if (forceDownload || bejegyzesek.isEmpty()) {
+            try {
+                val response = bejegyzesService.fetchBejegyzesList("hal")
+                val frissBejegyzesek = response.map { b -> Bejegyzes(
+                    b.azonosito, b.felhasznaloAzonosito, b.datum, b.tartalom
+                ) }
+                bejegyzesDao.clearBejegyzesList()
+                bejegyzesDao.insertBejegyzesList(frissBejegyzesek)
+                return frissBejegyzesek
+            } catch (e: Exception) {}
+        }
+        return bejegyzesek
+    }
 
     @WorkerThread
-    fun loadBejegyzesek(
-        onStart: () -> Unit,
-        onCompletion: () -> Unit,
-        onError: (String) -> Unit
-    ) = flow {
-        val bejegyzesek: List<Bejegyzes> = bejegyzesDao.getBejegyzesList()
-        if (bejegyzesek.isEmpty()) {
-            // TODO: api hívás, bejegyzések perzisztálása a DAO-n keresztül
-        } else {
-            emit(bejegyzesek)
+    suspend fun deleteBejegyzes() {
+        try {
+            bejegyzesService.deleteBejegyzes("hal")
+            val response = bejegyzesService.fetchBejegyzesList("hal")
+            val frissBejegyzesek = response.map { b -> Bejegyzes(
+                b.azonosito, b.felhasznaloAzonosito, b.datum, b.tartalom
+            ) }
+            bejegyzesDao.clearBejegyzesList()
+            bejegyzesDao.insertBejegyzesList(frissBejegyzesek)
+        } catch (e: Exception) {
+            Log.d("KN", e.message.toString())
         }
-    }.onStart { onStart() }.onCompletion { onCompletion() }.flowOn(Dispatchers.IO)
-
-    // TODO: megvalósítani a törlést
+    }
 }

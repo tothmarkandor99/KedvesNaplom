@@ -1,21 +1,18 @@
 package com.webtic.kedvesnaplom.network
 
-import com.webtic.kedvesnaplom.network.dto.DeleteBejegyzesDto
-import com.webtic.kedvesnaplom.network.dto.GetBejegyzesekDto
+import com.webtic.kedvesnaplom.network.dto.GetBejegyzesekListaElemDto
 import com.webtic.kedvesnaplom.network.dto.PutBejegyzesDto
-import retrofit2.Call
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
+import retrofit2.Response
+import retrofit2.http.*
 
 interface BejegyzesService {
 
-    @GET("bejegyzesek")
-    suspend fun fetchBejegyzesList(): Call<List<GetBejegyzesekDto>>
+    @GET("bejegyzesek/{felhasznaloAzonosito}")
+    suspend fun fetchBejegyzesList(@Path("felhasznaloAzonosito") felhasznaloAzonosito: String): List<GetBejegyzesekListaElemDto>
 
     @PUT("bejegyzes")
-    suspend fun putBejegyzes(bejegyzes: PutBejegyzesDto)
+    suspend fun putBejegyzes(@Body bejegyzes: PutBejegyzesDto)
 
-    @DELETE("bejegyzes")
-    suspend fun putBejegyzes(bejegyzes: DeleteBejegyzesDto)
+    @DELETE("bejegyzes/{felhasznaloAzonosito}")
+    suspend fun deleteBejegyzes(@Path("felhasznaloAzonosito") felhasznaloAzonosito: String): Response<Unit>
 }
