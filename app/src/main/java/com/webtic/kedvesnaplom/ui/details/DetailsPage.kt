@@ -1,8 +1,5 @@
 package com.webtic.kedvesnaplom.ui.details
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,22 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.webtic.kedvesnaplom.model.Bejegyzes
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class DetailsActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            DetailsPage(viewModel = hiltViewModel(), rememberNavController(), null)
-        }
-    }
-}
 
 @Composable
 fun DetailsPage(
@@ -84,7 +67,7 @@ fun EditBejegyzes(
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth().background(Color.Magenta).padding(16.dp),
+            modifier = Modifier.fillMaxWidth().background(Color.Cyan).padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Button(onClick = { onCancel() }) {

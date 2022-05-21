@@ -1,9 +1,5 @@
 package com.webtic.kedvesnaplom.ui.main
 
-import android.os.Bundle
-import android.view.WindowManager
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,92 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.webtic.kedvesnaplom.model.Bejegyzes
-import com.webtic.kedvesnaplom.ui.about.AboutPage
-import com.webtic.kedvesnaplom.ui.details.DetailsPage
-import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        setContent {
-            AppNavigation()
-        }
-    }
-}
-
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = NavScreen.Home.route
-    ) {
-        composable(NavScreen.Home.route) {
-            MainPage(
-                viewModel = hiltViewModel(),
-                navController,
-            )
-        }
-        composable(NavScreen.About.route) {
-            AboutPage()
-        }
-        composable(
-            route = NavScreen.BejegyzesDetails.route,
-        ) {
-            DetailsPage(viewModel = hiltViewModel(), navController, null)
-        }
-        composable(
-            route = NavScreen.BejegyzesDetails.routeWithArgument,
-            arguments = listOf(navArgument(NavScreen.BejegyzesDetails.argument0) {
-                defaultValue = "-1"
-            })
-        ) { backStackEntry ->
-            val azonosito =
-                backStackEntry.arguments?.getString(NavScreen.BejegyzesDetails.argument0)
-            DetailsPage(viewModel = hiltViewModel(), navController, azonosito?.toInt())
-        }
-    }
-}
-
-@Preview
-@Composable
-fun BejegyzesekPreview() {
-    Bejegyzesek(listOf(
-        Bejegyzes(
-            0,
-            "lorem",
-            "2022-05-08",
-            "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"
-        ),
-        Bejegyzes(
-            0,
-            "lorem",
-            "2022-05-08",
-            "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"
-        ),
-        Bejegyzes(
-            0,
-            "lorem",
-            "2022-05-08",
-            "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"
-        )
-    ), remember { mutableStateOf(false) }, {}, {}, rememberNavController()
-    )
-}
 
 @Composable
 fun MainPage(
@@ -162,6 +80,32 @@ fun MainPage(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun BejegyzesekPreview() {
+    Bejegyzesek(listOf(
+        Bejegyzes(
+            0,
+            "lorem",
+            "2022-05-08",
+            "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"
+        ),
+        Bejegyzes(
+            0,
+            "lorem",
+            "2022-05-08",
+            "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"
+        ),
+        Bejegyzes(
+            0,
+            "lorem",
+            "2022-05-08",
+            "The quick brown fox jumps over the lorem ipsum dolor sit amet consectetur"
+        )
+    ), remember { mutableStateOf(false) }, {}, {}, rememberNavController()
+    )
 }
 
 @Composable
@@ -276,14 +220,5 @@ fun MutableBejegyzes(
                 Icon(Icons.Rounded.Edit, contentDescription = "Szerkesztés")
             }
         }
-    }
-}
-
-sealed class NavScreen(val route: String) {
-    object Home : NavScreen("Home")
-    object About : NavScreen("About")
-    object BejegyzesDetails : NavScreen("BejegyzesDetails") {
-        const val routeWithArgument: String = "BejegyzesDetails/{azonosito}"
-        const val argument0: String = "azonosito"
     }
 }

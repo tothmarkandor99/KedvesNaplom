@@ -26,7 +26,9 @@ class MainRepository @Inject constructor(
                 bejegyzesDao.clearBejegyzesList()
                 bejegyzesDao.insertBejegyzesList(frissBejegyzesek)
                 return frissBejegyzesek
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+                Log.d("KN", e.message.toString())
+            }
         }
         return bejegyzesek
     }
