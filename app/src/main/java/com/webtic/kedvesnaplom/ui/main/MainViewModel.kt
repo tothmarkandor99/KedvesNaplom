@@ -34,15 +34,15 @@ class MainViewModel @Inject constructor(
         forceDownload: Boolean = false,
     ) {
         _bejegyzesek.value = mainRepository.loadBejegyzesek(forceDownload)
-        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
         val nowAsIso: String = df.format(Date())
-        _canAdd.value = !nowAsIso.equals(_bejegyzesek.value[0].datum)
+        _canAdd.value = nowAsIso != _bejegyzesek.value[0].datum
     }
 
     fun refreshBejegyzesek(forceDownload: Boolean = false) {
         viewModelScope.launch(Dispatchers.Main) {
             _isLoading.value = true
-            loadBejegyzesek(true)
+            loadBejegyzesek(forceDownload)
             _isLoading.value = false
         }
     }

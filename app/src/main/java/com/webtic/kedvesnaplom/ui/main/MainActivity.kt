@@ -16,10 +16,7 @@ import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +28,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.webtic.kedvesnaplom.R
 import com.webtic.kedvesnaplom.model.Bejegyzes
 import com.webtic.kedvesnaplom.ui.about.AboutPage
 import com.webtic.kedvesnaplom.ui.details.DetailsPage
@@ -44,7 +40,7 @@ import java.util.*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
             AppNavigation()
         }
@@ -185,10 +181,10 @@ fun Bejegyzesek(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         ) {
             val df: DateFormat =
-                SimpleDateFormat("yyyy-MM-dd")
+                SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val nowAsIso: String = df.format(Date())
             items(items = bejegyzesek, itemContent = { bejegyzes ->
-                if (bejegyzes.datum.equals(nowAsIso)) {
+                if (bejegyzes.datum == nowAsIso) {
                     MutableBejegyzes(
                         bejegyzes,
                         onDelete,
@@ -272,7 +268,6 @@ fun MutableBejegyzes(
                 maxLines = 1
             )
         }
-        val image: Painter = painterResource(id = R.drawable.ic_launcher_background)
         Row() {
             Button(onClick = { onDelete() }) {
                 Icon(Icons.Rounded.Delete, contentDescription = "Törlés")

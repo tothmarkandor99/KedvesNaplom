@@ -18,8 +18,7 @@ class DetailsRepository @Inject constructor(
 
     @WorkerThread
     suspend fun getBejegyzes(azonosito: Int): Bejegyzes? {
-        val bejegyzes = bejegyzesDao.getBejegyzes(azonosito)
-        return bejegyzes
+        return bejegyzesDao.getBejegyzes(azonosito)
     }
 
     @WorkerThread

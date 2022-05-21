@@ -25,7 +25,7 @@ class DetailsViewModel @Inject constructor(
     fun loadBejegyzes(azonosito: Int?) {
         if (azonosito === null) {
             val df: DateFormat =
-                SimpleDateFormat("yyyy-MM-dd")
+                SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             val nowAsIso: String = df.format(Date())
 
             _bejegyzes.value = Bejegyzes(azonosito = -1,"hal", nowAsIso, tartalom = "")
