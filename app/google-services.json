@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1040879535320",
+    "project_id": "kedves-naplom",
+    "storage_bucket": "kedves-naplom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040879535320:android:bbd2151fc045f0260e83ad",
+        "android_client_info": {
+          "package_name": "com.webtic.kedvesnaplom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040879535320-37u52n1bctdkfppn3p31978ajsmv0bd3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRs9Jskx12_hCUH5D0AW7WTggLo1dwiAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040879535320-37u52n1bctdkfppn3p31978ajsmv0bd3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
