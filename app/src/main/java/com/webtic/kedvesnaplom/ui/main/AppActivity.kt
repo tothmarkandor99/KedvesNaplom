@@ -1,6 +1,7 @@
 package com.webtic.kedvesnaplom.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,24 +11,39 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.webtic.kedvesnaplom.ui.about.AboutPage
 import com.webtic.kedvesnaplom.ui.details.DetailsPage
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAnalytics = Firebase.analytics
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
-            AppNavigation()
+            AppNavigation(firebaseAnalytics)
         }
     }
 }
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    firebaseAnalytics: FirebaseAnalytics,
+) {
     val navController = rememberNavController()
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        Log.d("KN", destination.route.toString())
+        val params = Bundle()
+        params.putString(FirebaseAnalytics.Param.SCREEN_NAME, destination.route as String?)
+        params.putString(FirebaseAnalytics.Param.SCREEN_CLASS, destination.route as String?)
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, params)
+    }
     NavHost(
         navController = navController,
         startDestination = NavScreen.Home.route

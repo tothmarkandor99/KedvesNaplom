@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,7 +22,9 @@ import com.webtic.kedvesnaplom.R
 @Composable
 fun AboutPage() {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -41,5 +44,10 @@ fun AboutPage() {
             color = Color.Black,
             modifier = Modifier.padding(16.dp)
         )
+        Button(onClick = {
+            throw RuntimeException("Test Crash")
+        }) {
+            Text(text = "Crash!")
+        }
     }
 }
